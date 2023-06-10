@@ -8,38 +8,62 @@ return require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
 
     use {
-        'nvim-telescope/telescope.nvim', tag = '0.1.1',
-        requires = { { 'nvim-lua/plenary.nvim' } }
-    }
-
-    use({
         'catppuccin/nvim',
         as = 'catpuccin',
         config = function()
             vim.cmd('colorscheme catppuccin-macchiato')
         end
-    })
+    }
 
-    use({
+    use {
+        'nvim-telescope/telescope.nvim', tag = '0.1.1',
+        requires = { { 'nvim-lua/plenary.nvim' } }
+    }
+
+    use {
         "folke/trouble.nvim",
         config = function()
-            require("trouble").setup {
-            }
+            require("trouble").setup()
         end
-    })
+    }
 
     use {
         'nvim-treesitter/nvim-treesitter',
         run = function()
             local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
             ts_update()
-        end, }
+        end,
+    }
+
+    use {
+        "windwp/nvim-ts-autotag",
+        dependencies = "nvim-treesitter/nvim-treesitter",
+        config = function()
+            require('nvim-ts-autotag').setup({})
+        end
+    }
+
     use("nvim-treesitter/playground")
     use("theprimeagen/harpoon")
     use("theprimeagen/refactoring.nvim")
     use("mbbill/undotree")
     use("tpope/vim-fugitive")
-    use("nvim-treesitter/nvim-treesitter-context");
+    use("nvim-treesitter/nvim-treesitter-context")
+    use('m4xshen/autoclose.nvim')
+
+    use {
+        'folke/which-key.nvim',
+        config = function()
+            require("which-key").setup()
+        end
+    }
+
+    use {
+        'numToStr/Comment.nvim',
+        config = function()
+            require("Comment").setup()
+        end
+    }
 
     use {
         'VonHeikemen/lsp-zero.nvim',
@@ -49,6 +73,8 @@ return require('packer').startup(function(use)
             { 'neovim/nvim-lspconfig' },
             { 'williamboman/mason.nvim' },
             { 'williamboman/mason-lspconfig.nvim' },
+            { 'j-hui/fidget.nvim' },
+            { 'folke/neodev.nvim' },
 
             -- Autocompletion
             { 'hrsh7th/nvim-cmp' },
@@ -65,9 +91,24 @@ return require('packer').startup(function(use)
     }
 
     use {
-        'numToStr/Comment.nvim',
+        'nvim-lualine/lualine.nvim',
         config = function()
-            require('Comment').setup()
+            require('lualine').setup({
+                icons_enabled = false,
+                theme = 'onedark',
+                component_separators = '|',
+                section_separators = '',
+            })
+        end
+    }
+
+    use {
+        "lukas-reineke/indent-blankline.nvim",
+        config = function()
+            require("indent_blankline").setup({
+                char = '┊',
+                show_trailing_blankline_indent = false,
+            })
         end
     }
 
