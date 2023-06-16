@@ -7,14 +7,14 @@ return require('packer').startup(function(use)
     -- Packer can manage itself
     use 'wbthomason/packer.nvim'
 
+    -- Theme
     use {
         'catppuccin/nvim',
-        as = 'catpuccin',
-        config = function()
-            vim.cmd('colorscheme catppuccin-macchiato')
-        end
+        as = 'catppuccin',
+        config = function() vim.cmd('colorscheme catppuccin-macchiato') end
     }
 
+    -- Code
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.1',
         requires = { { 'nvim-lua/plenary.nvim' } }
@@ -22,9 +22,7 @@ return require('packer').startup(function(use)
 
     use {
         "folke/trouble.nvim",
-        config = function()
-            require("trouble").setup()
-        end
+        config = function() require("trouble").setup() end
     }
 
     use {
@@ -34,35 +32,30 @@ return require('packer').startup(function(use)
             ts_update()
         end,
     }
+    use("nvim-treesitter/nvim-treesitter-context")
+
+    use {
+        "windwp/nvim-autopairs",
+        config = function() require("nvim-autopairs").setup {} end
+    }
 
     use {
         "windwp/nvim-ts-autotag",
         dependencies = "nvim-treesitter/nvim-treesitter",
-        config = function()
-            require('nvim-ts-autotag').setup({})
-        end
+        config = function() require('nvim-ts-autotag').setup {} end
     }
 
-    use("nvim-treesitter/playground")
     use("theprimeagen/harpoon")
     use("theprimeagen/refactoring.nvim")
-    use("mbbill/undotree")
     use("tpope/vim-fugitive")
-    use("nvim-treesitter/nvim-treesitter-context")
-    use('m4xshen/autoclose.nvim')
-
-    use {
-        'folke/which-key.nvim',
-        config = function()
-            require("which-key").setup()
-        end
-    }
+    use("mbbill/undotree")
+    use('neovim/nvim-lspconfig')
+    use('jose-elias-alvarez/null-ls.nvim')
+    use('MunifTanjim/prettier.nvim')
 
     use {
         'numToStr/Comment.nvim',
-        config = function()
-            require("Comment").setup()
-        end
+        config = function() require("Comment").setup() end
     }
 
     use {
@@ -90,12 +83,19 @@ return require('packer').startup(function(use)
         }
     }
 
+    -- Visual
+    use("NvChad/nvim-colorizer.lua")
+    use {
+        'folke/which-key.nvim',
+        config = function() require("which-key").setup() end
+    }
+
     use {
         'nvim-lualine/lualine.nvim',
         config = function()
             require('lualine').setup({
                 icons_enabled = false,
-                theme = 'onedark',
+                theme = 'catppuccin-macchiato',
                 component_separators = '|',
                 section_separators = '',
             })
@@ -112,6 +112,8 @@ return require('packer').startup(function(use)
         end
     }
 
-    use("github/copilot.vim")
+    -- Utils
+    -- use("github/copilot.vim")
+    use("nvim-treesitter/playground")
     use("eandrju/cellular-automaton.nvim")
 end)

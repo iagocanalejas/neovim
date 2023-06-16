@@ -8,6 +8,8 @@ Format File:                <leader>f
 Format Selection:           <leader>ri
 Replace Current Word:       <leader>s
 
+Move previous word:         [B]egining | [E]nd
+
 Half Page Jump:             <C-i> | <C-d>
 
 Open Packer:                <leader>vpp
@@ -23,6 +25,11 @@ Paste in selection:         <leader>p  (doesn't lose the copied buffer)
 Copy in system clipboard:   <leader>y
 
 Remove \n:                  J
+
+Copy current word:          byw
+
+Select current paragraph    vap
+Remove current paragraph    dap
 
 Move selected line:         J | K
 ```
