@@ -33,6 +33,7 @@ return require('packer').startup(function(use)
         end,
     }
     use("nvim-treesitter/nvim-treesitter-context")
+    use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' } -- Folding
 
     use {
         "windwp/nvim-autopairs",
@@ -49,9 +50,6 @@ return require('packer').startup(function(use)
     use("theprimeagen/refactoring.nvim")
     use("tpope/vim-fugitive")
     use("mbbill/undotree")
-    use('neovim/nvim-lspconfig')
-    use('jose-elias-alvarez/null-ls.nvim')
-    use('MunifTanjim/prettier.nvim')
 
     use {
         'numToStr/Comment.nvim',
@@ -68,6 +66,8 @@ return require('packer').startup(function(use)
             { 'williamboman/mason-lspconfig.nvim' },
             { 'j-hui/fidget.nvim' },
             { 'folke/neodev.nvim' },
+            { 'jose-elias-alvarez/null-ls.nvim' },
+            { 'MunifTanjim/prettier.nvim' },
 
             -- Autocompletion
             { 'hrsh7th/nvim-cmp' },

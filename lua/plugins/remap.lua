@@ -1,12 +1,12 @@
 vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = "[P]roject [V]iew" })
 
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move Selection Down" })
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move Selection Up" })
 
-vim.keymap.set("n", "J", "mzJ`z")
-vim.keymap.set("n", "<C-i>", "<C-d>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
+vim.keymap.set("n", "J", "mzJ`z", { desc = "Remove Line Break" })
+vim.keymap.set("n", "<C-i>", "<C-d>zz", { desc = "Page Down" })
+vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Page Up" })
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 

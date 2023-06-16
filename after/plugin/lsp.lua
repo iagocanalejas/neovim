@@ -56,7 +56,16 @@ lsp.on_attach(function(client, bufnr)
     vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
 end)
 
-lsp.setup()
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.foldingRange = {
+    dynamicRegistration = false,
+    lineFoldingOnly = true
+}
+
+lsp.setup({
+    capabilities = capabilities,
+})
+require('ufo').setup()
 
 vim.diagnostic.config({
     virtual_text = true
