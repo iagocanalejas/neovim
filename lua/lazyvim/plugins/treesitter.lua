@@ -26,6 +26,7 @@ return {
 					end
 				end,
 			},
+			{ "windwp/nvim-ts-autotag", opts = {} },
 		},
 		keys = {
 			{ "<c-space>", desc = "Increment selection" },
@@ -35,6 +36,8 @@ return {
 		opts = {
 			highlight = { enable = true },
 			indent = { enable = true },
+			autotag = { enable = true },
+			auto_install = true,
 			ensure_installed = {
 				"bash",
 				"html",
@@ -46,6 +49,7 @@ return {
 				"markdown",
 				"markdown_inline",
 				"python",
+				"prisma",
 				"query",
 				"regex",
 				"tsx",
