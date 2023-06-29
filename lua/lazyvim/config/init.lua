@@ -9,6 +9,7 @@ local defaults = {
 	---@type string|fun()
 	colorscheme = function()
 		require("catppuccin").load()
+		vim.cmd.colorscheme("catppuccin-macchiato")
 	end,
 	-- load the default settings
 	defaults = {
