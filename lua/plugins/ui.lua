@@ -1,38 +1,70 @@
-return {
-	-- Better `vim.notify()`
-	{
-		"rcarriga/nvim-notify",
-		keys = {
-			{
-				"<leader>un",
-				function()
-					require("notify").dismiss({ silent = true, pending = true })
-				end,
-				desc = "Dismiss all Notifications",
-			},
-		},
-		opts = {
-			timeout = 3000,
-			background_colour = "#000000",
-			max_height = function()
-				return math.floor(vim.o.lines * 0.75)
-			end,
-			max_width = function()
-				return math.floor(vim.o.columns * 0.75)
-			end,
-		},
-		init = function()
-			-- when noice is not enabled, install notify on VeryLazy
-			local Util = require("lazyvim.util")
-			if not Util.has("noice.nvim") then
-				Util.on_very_lazy(function()
-					vim.notify = require("notify")
-				end)
-			end
-		end,
-	},
+local function fg(name)
+	---@type {foreground?:number}?
+	local hl = vim.api.nvim_get_hl and vim.api.nvim_get_hl(0, { name = name })
+		or vim.api.nvim_get_hl_by_name(name, true)
+	local fg = hl and hl.fg or hl.foreground
+	return fg and { fg = string.format("#%06x", fg) }
+end
 
-	-- better vim.ui
+local icons = {
+	dap = {
+		Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
+		Breakpoint = " ",
+		BreakpointCondition = " ",
+		BreakpointRejected = { " ", "DiagnosticError" },
+		LogPoint = ".>",
+	},
+	diagnostics = {
+		Error = " ",
+		Warn = " ",
+		Hint = " ",
+		Info = " ",
+	},
+	git = {
+		added = " ",
+		modified = " ",
+		removed = " ",
+	},
+	kinds = {
+		Array = " ",
+		Boolean = " ",
+		Class = " ",
+		Color = " ",
+		Constant = " ",
+		Constructor = " ",
+		Copilot = " ",
+		Enum = " ",
+		EnumMember = " ",
+		Event = " ",
+		Field = " ",
+		File = " ",
+		Folder = " ",
+		Function = " ",
+		Interface = " ",
+		Key = " ",
+		Keyword = " ",
+		Method = " ",
+		Module = " ",
+		Namespace = " ",
+		Null = " ",
+		Number = " ",
+		Object = " ",
+		Operator = " ",
+		Package = " ",
+		Property = " ",
+		Reference = " ",
+		Snippet = " ",
+		String = " ",
+		Struct = " ",
+		Text = " ",
+		TypeParameter = " ",
+		Unit = " ",
+		Value = " ",
+		Variable = " ",
+	},
+}
+
+return {
 	{
 		"stevearc/dressing.nvim",
 		lazy = true,
@@ -49,15 +81,10 @@ return {
 			end
 		end,
 	},
-
-	-- statusline
 	{
 		"nvim-lualine/lualine.nvim",
 		event = "VeryLazy",
 		opts = function()
-			local icons = require("lazyvim.config").icons
-			local Util = require("lazyvim.util")
-
 			return {
 				options = {
 					theme = "auto",
@@ -77,7 +104,15 @@ return {
 								hint = icons.diagnostics.Hint,
 							},
 						},
-						{ "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+						{
+							"filetype",
+							icon_only = true,
+							separator = "",
+							padding = {
+								left = 1,
+								right = 0,
+							},
+						},
 						{ "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
 						{
 							function()
@@ -96,7 +131,7 @@ return {
 							cond = function()
 								return package.loaded["noice"] and require("noice").api.status.command.has()
 							end,
-							color = Util.fg("Statement"),
+							color = fg("Statement"),
 						},
 						{
 							function()
@@ -105,7 +140,7 @@ return {
 							cond = function()
 								return package.loaded["noice"] and require("noice").api.status.mode.has()
 							end,
-							color = Util.fg("Constant"),
+							color = fg("Constant"),
 						},
 						{
 							function()
@@ -114,12 +149,12 @@ return {
 							cond = function()
 								return package.loaded["dap"] and require("dap").status() ~= ""
 							end,
-							color = Util.fg("Debug"),
+							color = fg("Debug"),
 						},
 						{
 							require("lazy.status").updates,
 							cond = require("lazy.status").has_updates,
-							color = Util.fg("Special"),
+							color = fg("Special"),
 						},
 						{
 							"diff",
@@ -140,17 +175,15 @@ return {
 						end,
 					},
 				},
-				extensions = { "neo-tree", "lazy" },
+				extensions = { "lazy" },
 			}
 		end,
 	},
 
-	-- indent guides for Neovim
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		event = { "BufReadPost", "BufNewFile" },
 		opts = {
-			-- char = "▏",
 			char = "│",
 			filetype_exclude = {
 				"help",
@@ -169,46 +202,6 @@ return {
 		},
 	},
 
-	-- active indent guide and indent text objects
-	{
-		"echasnovski/mini.indentscope",
-		version = false, -- wait till new 0.7.0 release to put it back on semver
-		event = { "BufReadPre", "BufNewFile" },
-		opts = {
-			-- symbol = "▏",
-			symbol = "│",
-			options = { try_as_border = true },
-		},
-		init = function()
-			vim.api.nvim_create_autocmd("FileType", {
-				pattern = {
-					"help",
-					"alpha",
-					"dashboard",
-					"neo-tree",
-					"Trouble",
-					"lazy",
-					"mason",
-					"notify",
-					"toggleterm",
-					"lazyterm",
-				},
-				callback = function()
-					vim.b.miniindentscope_disable = true
-				end,
-			})
-		end,
-	},
-
-	-- noicer ui
-	{
-		"folke/which-key.nvim",
-		opts = function(_, opts)
-			if require("lazyvim.util").has("noice.nvim") then
-				opts.defaults["<leader>sn"] = { name = "+noice" }
-			end
-		end,
-	},
 	{
 		"folke/noice.nvim",
 		event = "VeryLazy",
@@ -304,86 +297,32 @@ return {
 		},
 	},
 
-	-- dashboard
-	{
-		"goolord/alpha-nvim",
-		event = "VimEnter",
-		opts = function()
-			local dashboard = require("alpha.themes.dashboard")
-			local logo = [[
-           ██╗      █████╗ ███████╗██╗   ██╗██╗   ██╗██╗███╗   ███╗          Z
-           ██║     ██╔══██╗╚══███╔╝╚██╗ ██╔╝██║   ██║██║████╗ ████║      Z    
-           ██║     ███████║  ███╔╝  ╚████╔╝ ██║   ██║██║██╔████╔██║   z       
-           ██║     ██╔══██║ ███╔╝    ╚██╔╝  ╚██╗ ██╔╝██║██║╚██╔╝██║ z         
-           ███████╗██║  ██║███████╗   ██║    ╚████╔╝ ██║██║ ╚═╝ ██║
-           ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝     ╚═══╝  ╚═╝╚═╝     ╚═╝
-      ]]
-
-			dashboard.section.header.val = vim.split(logo, "\n")
-			dashboard.section.buttons.val = {
-				dashboard.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
-				dashboard.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
-				dashboard.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
-				dashboard.button("g", " " .. " Find text", ":Telescope live_grep <CR>"),
-				dashboard.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
-				dashboard.button("s", " " .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
-				dashboard.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
-				dashboard.button("q", " " .. " Quit", ":qa<CR>"),
-			}
-			for _, button in ipairs(dashboard.section.buttons.val) do
-				button.opts.hl = "AlphaButtons"
-				button.opts.hl_shortcut = "AlphaShortcut"
-			end
-			dashboard.section.header.opts.hl = "AlphaHeader"
-			dashboard.section.buttons.opts.hl = "AlphaButtons"
-			dashboard.section.footer.opts.hl = "AlphaFooter"
-			dashboard.opts.layout[1].val = 8
-			return dashboard
-		end,
-		config = function(_, dashboard)
-			-- close Lazy and re-open when the dashboard is ready
-			if vim.o.filetype == "lazy" then
-				vim.cmd.close()
-				vim.api.nvim_create_autocmd("User", {
-					pattern = "AlphaReady",
-					callback = function()
-						require("lazy").show()
-					end,
-				})
-			end
-
-			require("alpha").setup(dashboard.opts)
-
-			vim.api.nvim_create_autocmd("User", {
-				pattern = "LazyVimStarted",
-				callback = function()
-					local stats = require("lazy").stats()
-					local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-					dashboard.section.footer.val = "⚡ Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms"
-					pcall(vim.cmd.AlphaRedraw)
-				end,
-			})
-		end,
-	},
-
 	-- lsp symbol navigation for lualine
 	{
 		"SmiteshP/nvim-navic",
 		lazy = true,
 		init = function()
-			vim.g.navic_silence = true
-			require("lazyvim.util").on_attach(function(client, buffer)
+			local on_attach = function(client, buffer)
 				if client.server_capabilities.documentSymbolProvider then
 					require("nvim-navic").attach(client, buffer)
 				end
-			end)
+			end
+
+			vim.g.navic_silence = true
+			vim.api.nvim_create_autocmd("LspAttach", {
+				callback = function(args)
+					local buffer = args.buf
+					local client = vim.lsp.get_client_by_id(args.data.client_id)
+					on_attach(client, buffer)
+				end,
+			})
 		end,
 		opts = function()
 			return {
 				separator = " ",
 				highlight = true,
 				depth_limit = 5,
-				icons = require("lazyvim.config").icons.kinds,
+				icons = icons.kinds,
 			}
 		end,
 	},
