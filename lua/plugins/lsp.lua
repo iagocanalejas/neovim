@@ -57,6 +57,7 @@ local servers = {
 		prismaFmtBinPath = "",
 	},
 	pyright = {},
+	ruff_lsp = {},
 	yamlls = {},
 }
 
@@ -164,7 +165,6 @@ return {
 				"mypy",
 				"prettierd",
 				"pyright",
-				"ruff",
 				"shfmt",
 				"stylua",
 			},
@@ -206,9 +206,6 @@ return {
 				sources = {
 					nls.builtins.diagnostics.fish,
 					-- nls.builtins.diagnostics.mypy,
-					nls.builtins.diagnostics.ruff.with({
-						extra_args = { "--line-length=120" },
-					}),
 
 					nls.builtins.formatting.fish_indent,
 					nls.builtins.formatting.stylua,
