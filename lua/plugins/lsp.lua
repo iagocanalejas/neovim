@@ -57,7 +57,15 @@ local servers = {
 		prismaFmtBinPath = "",
 	},
 	pyright = {},
-	ruff_lsp = {},
+	ruff_lsp = {
+		on_attach = function(client, bufnr)
+			-- Enable completion triggered by <c-x><c-o>
+			vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+		end,
+		settings = {
+			args = { "--line-length=120" },
+		},
+	},
 	yamlls = {},
 }
 
@@ -94,7 +102,6 @@ return {
 			lsp.nvim_workspace()
 
 			local cmp = require("cmp")
-			local cmp_select = { behavior = cmp.SelectBehavior.Select }
 			local cmp_mappings = lsp.defaults.cmp_mappings({
 				["<Cr>"] = cmp.mapping.confirm({ select = true }),
 				["<C-Space>"] = cmp.mapping.complete(),
@@ -116,40 +123,32 @@ return {
 			})
 
 			lsp.on_attach(function(client, bufnr)
-				local opts = { buffer = bufnr, remap = false }
+				local opts = { buffer = bufnr, noremap = true, silent = true }
 
-				vim.keymap.set("n", "gd", function()
-					vim.lsp.buf.definition()
-				end, opts)
-				vim.keymap.set("i", "<C-k>", function()
-					vim.lsp.buf.signature_help()
-				end, opts)
-				vim.keymap.set("n", "K", function()
-					vim.lsp.buf.hover()
-				end, opts)
-
-				vim.keymap.set("n", "[d", function()
-					vim.diagnostic.goto_next()
-				end, opts)
-				vim.keymap.set("n", "]d", function()
-					vim.diagnostic.goto_prev()
-				end, opts)
-
-				vim.keymap.set("n", "<leader>vws", function()
-					vim.lsp.buf.workspace_symbol()
-				end, opts)
-				vim.keymap.set("n", "<leader>vca", function()
-					vim.lsp.buf.code_action()
-				end, opts)
-				vim.keymap.set("n", "<leader>vrr", function()
-					vim.lsp.buf.references()
-				end, opts)
-				vim.keymap.set("n", "<leader>vrn", function()
-					vim.lsp.buf.rename()
-				end, opts)
+				vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+				vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+				vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+				vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+				vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+				vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, opts)
+				vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
+				vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, opts)
+				vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, opts)
 			end)
 
 			lsp.setup()
+
+			-- setup all the servers
+			local lspconfig = require("lspconfig")
+			lspconfig.jsonls.setup(servers.jsonls)
+			lspconfig.lua_ls.setup(servers.lua_ls)
+			lspconfig.marksman.setup(servers.marksman)
+			lspconfig.tsserver.setup(servers.tsserver)
+			lspconfig.tailwindcss.setup(servers.tailwindcss)
+			lspconfig.prismals.setup(servers.prismals)
+			lspconfig.pyright.setup(servers.pyright)
+			lspconfig.ruff_lsp.setup(servers.ruff_lsp)
+			lspconfig.yamlls.setup(servers.yamlls)
 
 			vim.diagnostic.config({ virtual_text = true })
 		end,
@@ -162,7 +161,6 @@ return {
 		opts = {
 			ensure_installed = {
 				"black",
-				"mypy",
 				"prettierd",
 				"pyright",
 				"shfmt",
@@ -205,7 +203,6 @@ return {
 				root_dir = require("null-ls.utils").root_pattern(".null-ls-root", ".neoconf.json", "Makefile", ".git"),
 				sources = {
 					nls.builtins.diagnostics.fish,
-					-- nls.builtins.diagnostics.mypy,
 
 					nls.builtins.formatting.fish_indent,
 					nls.builtins.formatting.stylua,
