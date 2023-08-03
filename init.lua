@@ -105,7 +105,7 @@ vim.g.markdown_recommended_style = 0
 
 vim.g.netrw_banner = false -- Disable banner
 vim.g.netrw_altv = 1 -- Open with right splitting
-vim.g.netrw_liststyle = 3
+vim.g.netrw_liststyle = 4
 vim.g.netrw_list_hide = (vim.fn["netrw_gitignore#Hide"]()) .. [[,\(^\|\s\s\)\zs\.\S\+]] -- use .gitignore
 
 ------------------------------
@@ -227,3 +227,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	group = highlight_group,
 	pattern = "*",
 })
+
+-- The line beneath this is called `modeline`. See `:help modeline`
+-- vim: ts=2 sts=2 sw=2 et
