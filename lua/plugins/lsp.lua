@@ -1,4 +1,6 @@
 -- LSP Server Settings
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
 ---@type lspconfig.options
 local servers = {
 	jsonls = {
@@ -15,6 +17,7 @@ local servers = {
 				validate = { enable = true },
 			},
 		},
+		capabilities = capabilities,
 	},
 	lua_ls = {
 		settings = {
@@ -27,6 +30,7 @@ local servers = {
 				},
 			},
 		},
+		capabilities = capabilities,
 	},
 	marksman = {},
 	tsserver = {
@@ -49,12 +53,15 @@ local servers = {
 				completeFunctionCalls = true,
 			},
 		},
+		capabilities = capabilities,
 	},
 	tailwindcss = {
 		filetypes_exclude = { "markdown" },
+		capabilities = capabilities,
 	},
 	prismals = {
 		prismaFmtBinPath = "",
+		capabilities = capabilities,
 	},
 	pyright = {},
 	ruff_lsp = {
@@ -65,8 +72,9 @@ local servers = {
 		settings = {
 			args = { "--line-length=120" },
 		},
+		capabilities = capabilities,
 	},
-	yamlls = {},
+	yamlls = { capabilities = capabilities },
 }
 
 return {
@@ -78,14 +86,6 @@ return {
 			{ "neovim/nvim-lspconfig" },
 			{ "williamboman/mason.nvim" },
 			{ "williamboman/mason-lspconfig.nvim" },
-
-			-- Autocompletion
-			{ "hrsh7th/nvim-cmp" },
-			{ "hrsh7th/cmp-buffer" },
-			{ "hrsh7th/cmp-path" },
-			{ "saadparwaiz1/cmp_luasnip" },
-			{ "hrsh7th/cmp-nvim-lsp" },
-			{ "hrsh7th/cmp-nvim-lua" },
 
 			-- Snippets
 			{ "L3MON4D3/LuaSnip" },
