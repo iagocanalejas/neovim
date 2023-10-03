@@ -167,7 +167,7 @@ return {
 						},
 					},
 					lualine_y = {
-						{ "progress", separator = " ", padding = { left = 1, right = 0 } },
+						{ "progress", separator = " ",                  padding = { left = 1, right = 0 } },
 						{ "location", padding = { left = 0, right = 1 } },
 					},
 					lualine_z = {
@@ -184,22 +184,13 @@ return {
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		event = { "BufReadPost", "BufNewFile" },
+		main = "ibl",
 		opts = {
-			char = "│",
-			filetype_exclude = {
-				"help",
-				"alpha",
-				"dashboard",
-				"neo-tree",
-				"Trouble",
-				"lazy",
-				"mason",
-				"notify",
-				"toggleterm",
-				"lazyterm",
+			indent = { char = "│", tab_char = { "│" }, smart_indent_cap = false },
+			whitespace = {
+				remove_blankline_trail = false,
 			},
-			show_trailing_blankline_indent = false,
-			show_current_context = false,
+			scope = { enabled = false },
 		},
 	},
 
@@ -332,5 +323,5 @@ return {
 	{ "nvim-tree/nvim-web-devicons", lazy = true },
 
 	-- ui components
-	{ "MunifTanjim/nui.nvim", lazy = true },
+	{ "MunifTanjim/nui.nvim",        lazy = true },
 }
