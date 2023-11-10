@@ -1,4 +1,4 @@
-local disallowed_paths = { "*/build/*" }
+local disallowed_paths = { "*/build/*", "*/out/*", "*/dist/*" }
 
 local function get_referenced_item_path(completion_item)
 	local path = nil
@@ -40,12 +40,9 @@ return {
 			{ "hrsh7th/cmp-path" },
 			{ "saadparwaiz1/cmp_luasnip" },
 			{ "hrsh7th/cmp-nvim-lsp" },
-			{ "hrsh7th/cmp-nvim-lua" },
-			{
-				"L3MON4D3/LuaSnip",
-				event = "InsertEnter",
-				dependencies = { "rafamadriz/friendly-snippets" },
-			},
+			{ "L3MON4D3/LuaSnip", },
+			{ "rafamadriz/friendly-snippets" },
+			{ "lukas-reineke/cmp-under-comparator" },
 		},
 		config = function()
 			require("luasnip/loaders/from_vscode").lazy_load()
@@ -61,7 +58,6 @@ return {
 					["<Tab>"] = cmp.mapping.confirm({ select = true }),
 				}),
 				sources = cmp.config.sources({
-					{ name = "luasnip" },
 					{
 						name = "nvim_lsp",
 						entry_filter = function(entry, ctx)
@@ -74,12 +70,21 @@ return {
 							return true
 						end,
 					},
-					{ name = "nvim_lua" },
-					{ name = "tabnine" },
-					{ name = "vim-dadbod-completion" },
-					{ name = "buffer",               keyword_length = 4 },
+					{ name = "buffer", keyword_length = 3 },
+					{ name = "luasnip" },
 					{ name = "path" },
 				}),
+				-- TODO: i'm testing this
+				sorting = {
+					comparators = {
+						cmp.config.compare.offset,
+						cmp.config.compare.exact,
+						cmp.config.compare.score,
+						cmp.config.compare.recently_used,
+						require("cmp-under-comparator").under,
+						cmp.config.compare.kind,
+					},
+				},
 				snippet = {
 					expand = function(args)
 						require("luasnip").lsp_expand(args.body)
