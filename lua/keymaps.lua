@@ -61,10 +61,10 @@ vim.keymap.set("n", "<leader>-", "<C-W>s", { desc = "Split window below", remap 
 vim.keymap.set("n", "<leader>|", "<C-W>v", { desc = "Split window right", remap = true })
 
 -- Custom mappings
-vim.keymap.set("n", "<leader>ee", vim.cmd.Ex) -- opens Explorer
-vim.keymap.set("n", "J", "mzJ`z")             -- removes line break
-vim.keymap.set("x", "p", [["_dP]])            -- greatest remap ever
-vim.keymap.set("i", "<C-c>", "<Esc>")         -- this is going to get me cancelled
+vim.keymap.set("n", "<leader>ee", vim.cmd.Ex)                                           -- opens Explorer
+vim.keymap.set("n", "J", "mzJ`z")                                                       -- removes line break
+vim.keymap.set("x", "<leader>p", [["_dP]], { desc = "Paste without clipboard update" }) -- greatest remap ever
+vim.keymap.set("i", "<C-c>", "<Esc>")                                                   -- this is going to get me cancelled
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Replace" })
 

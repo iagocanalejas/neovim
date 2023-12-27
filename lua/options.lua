@@ -60,3 +60,11 @@ global.netrw_banner = false                                                     
 global.netrw_altv = 1                                                                    -- Open with right splitting
 global.netrw_liststyle = 4
 global.netrw_list_hide = (vim.fn["netrw_gitignore#Hide"]()) .. [[,\(^\|\s\s\)\zs\.\S\+]] -- use .gitignore
+
+
+-- additional filetypes
+vim.filetype.add({
+	extension = {
+		templ = "templ",
+	},
+})
