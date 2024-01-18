@@ -32,6 +32,34 @@ local match_path = function(patterns, path)
 	return false
 end
 
+local kind_icons = {
+	Text = ' ',
+	Method = ' ',
+	Function = ' ',
+	Constructor = ' ',
+	Field = ' ',
+	Variable = ' ',
+	Class = ' ',
+	Interface = ' ',
+	Module = ' ',
+	Property = ' ',
+	Snippet = ' ',
+	Unit = ' ',
+	Value = ' ',
+	Enum = ' ',
+	Keyword = ' ',
+	Color = ' ',
+	File = ' ',
+	Reference = ' ',
+	Folder = ' ',
+	EnumMember = ' ',
+	Constant = ' ',
+	Struct = ' ',
+	Event = ' ',
+	Operator = ' ',
+	TypeParameter = ' ',
+}
+
 return {
 	{
 		"hrsh7th/nvim-cmp",
@@ -41,7 +69,6 @@ return {
 			{ "saadparwaiz1/cmp_luasnip" },
 			{ "hrsh7th/cmp-nvim-lsp" },
 			{ "L3MON4D3/LuaSnip", },
-			{ "rafamadriz/friendly-snippets" },
 			{ "lukas-reineke/cmp-under-comparator" },
 		},
 		config = function()
@@ -58,6 +85,7 @@ return {
 					["<Tab>"] = cmp.mapping.confirm({ select = true }),
 				}),
 				sources = cmp.config.sources({
+					{ name = 'nvim_lsp_signature_help' },
 					{
 						name = "nvim_lsp",
 						entry_filter = function(entry, ctx)
@@ -70,11 +98,13 @@ return {
 							return true
 						end,
 					},
-					{ name = "buffer", keyword_length = 3 },
 					{ name = "luasnip" },
+					{
+						name = "buffer",
+						keyword_length = 3
+					},
 					{ name = "path" },
 				}),
-				-- TODO: i'm testing this
 				sorting = {
 					comparators = {
 						cmp.config.compare.offset,
@@ -94,6 +124,20 @@ return {
 					disabled = disabled or context.in_treesitter_capture("comment")
 					return not disabled
 				end,
+				formatting = {
+					format = function(entry, vim_item)
+						-- Kind icons
+						vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind) -- This concatonates the icons with the name of the item kind
+						-- Source
+						vim_item.menu = ({
+							buffer = "[Buffer]",
+							nvim_lsp = "[LSP]",
+							luasnip = "[LuaSnip]",
+							nvim_lua = "[Lua]",
+						})[entry.source.name]
+						return vim_item
+					end,
+				},
 				snippet = {
 					expand = function(args)
 						require("luasnip").lsp_expand(args.body)
