@@ -84,7 +84,9 @@ return {
 		version = false, -- telescope did only one release, so use HEAD for now
 		dependencies = {
 			{ "debugloop/telescope-undo.nvim" },
+			{ "nvim-telescope/telescope-file-browser.nvim" },
 		},
+
 		keys = {
 			{ "<leader>,",       "<cmd>Telescope buffers show_all_buffers=true<cr>", desc = "Switch Buffer" },
 			{ "<leader>/",       telescope("live_grep"),                             desc = "Grep (root dir)" },
@@ -156,8 +158,10 @@ return {
 				}),
 				desc = "Goto Symbol (Workspace)",
 			},
-			{ "<leader>uu", "<cmd>Telescope undo<cr>" },
+			{ "<leader>e", ":Telescope file_browser<CR>", { noremap = true }, desc = "Open up file browser" },
+			{ "<leader>u", "<cmd>Telescope undo<cr>" },
 		},
+
 		opts = {
 			defaults = {
 				prompt_prefix = " ",
@@ -201,28 +205,26 @@ return {
 				},
 			},
 		},
+
 		config = function()
 			require("telescope").setup({
 				extensions = {
 					undo = {
 						mappings = {
-							i = {
-								["<C-u>"] = require("telescope-undo.actions").restore,
-							},
+							i = {},
+						},
+					},
+					file_browser = {
+						theme = "ivy",
+						hijack_netrw = true, -- disables netrw and use telescope-file-browser in its place
+						mappings = {
+							["i"] = {},
+							["n"] = {},
 						},
 					},
 				},
 			})
 			require("telescope").load_extension("undo")
-		end,
-	},
-	{
-		"nvim-telescope/telescope-file-browser.nvim",
-		dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
-		keys = {
-			{ "<leader>e", ":Telescope file_browser<CR>", { noremap = true }, desc = "Open up file browser" },
-		},
-		config = function()
 			require("telescope").load_extension("file_browser")
 		end,
 	},
