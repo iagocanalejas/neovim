@@ -11,6 +11,41 @@ local function override_opts(overriden)
 	return vim.tbl_deep_extend("force", get_base_opts(), overriden)
 end
 
+local function filter(arr, func)
+	-- Filter in place
+	-- https://stackoverflow.com/questions/49709998/how-to-filter-a-lua-array-inplace
+	local new_index = 1
+	local size_orig = #arr
+	for old_index, v in ipairs(arr) do
+		if func(v, old_index) then
+			arr[new_index] = v
+			new_index = new_index + 1
+		end
+	end
+	for i = new_index, size_orig do arr[i] = nil end
+end
+
+local function pyright_accessed_filter(diagnostic)
+	-- Allow kwargs to be unused, sometimes you want many functions to take the
+	-- same arguments but you don't use all the arguments in all the functions,
+	-- so kwargs is used to suck up all the extras
+	if diagnostic.message == '"kwargs" is not accessed' then
+		return false
+	end
+
+	-- Allow variables starting with an underscore
+	if string.match(diagnostic.message, '"_.+" is not accessed') then
+		return false
+	end
+
+	return true
+end
+
+local function custom_on_publish_diagnostics(a, params, client_id, c, config)
+	filter(params.diagnostics, pyright_accessed_filter)
+	vim.lsp.diagnostic.on_publish_diagnostics(a, params, client_id, c, config)
+end
+
 local handlers = {
 	function(server_name)
 		require("lspconfig")[server_name].setup(get_base_opts())
@@ -118,8 +153,11 @@ local handlers = {
 	end,
 
 	['pyright'] = function()
-		-- disable diagnostics here. all diagnostics are in mypy & ruff
-		require("lspconfig").pyright.setup(override_opts {})
+		require("lspconfig").pyright.setup(override_opts {
+			on_attach = function(client, bufnr)
+				vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(custom_on_publish_diagnostics, {})
+			end
+		})
 	end,
 
 	['ruff_lsp'] = function()
@@ -129,6 +167,20 @@ local handlers = {
 				client.server_capabilities.hoverProvider = false
 				-- Enable completion triggered by <c-x><c-o>
 				vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+				-- Enable import sorting
+				vim.keymap.set(
+					'n',
+					'<leader>o',
+					function()
+						vim.lsp.buf.code_action({
+							apply = true,
+							context = {
+								only = { "source.organizeImports" },
+								diagnostics = {},
+							},
+						})
+					end,
+					{ desc = "Organize Imports" })
 			end,
 			settings = {
 				args = { "--line-length=120" },
