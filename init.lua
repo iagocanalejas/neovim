@@ -46,14 +46,13 @@ require "keymaps"
 
 
 -- [[ Highlight on yank ]]
--- See `:help vim.highlight.on_yank()`
-local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
-    callback = function()
-        vim.highlight.on_yank()
-    end,
-    group = highlight_group,
+    group = vim.api.nvim_create_augroup("highlight_yank", { clear = true }),
     pattern = "*",
+    desc = "Highlight selection on yank",
+    callback = function()
+        vim.highlight.on_yank({ timeout = 200, visual = true })
+    end,
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`

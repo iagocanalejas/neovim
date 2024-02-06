@@ -47,6 +47,7 @@ return {
 					"query",
 					"regex",
 					"tsx",
+					"toml",
 					"typescript",
 					"vim",
 					"vimdoc",
@@ -59,6 +60,9 @@ return {
 				indent = {
 					enable = true,
 					disable = { "python" },
+				},
+				autopairs = {
+					enable = true,
 				},
 				autotag = {
 					enable = true,
@@ -82,4 +86,11 @@ return {
 		end,
 	},
 	{ "nvim-treesitter/nvim-treesitter-context", config = true },
+	-- f-strings
+	-- - auto-convert strings to f-strings when typing `{}` in a string
+	-- - also auto-converts f-strings back to regular strings when removing `{}`
+	{
+		"chrisgrieser/nvim-puppeteer",
+		dependencies = "nvim-treesitter/nvim-treesitter",
+	},
 }

@@ -84,8 +84,27 @@ return {
 	{
 		"nvim-lualine/lualine.nvim",
 		event = "VeryLazy",
-		opts = function()
-			return {
+		config = function()
+			local harpoon = require("harpoon")
+
+			local function harpoon_component()
+				local total_marks = harpoon:list():length()
+
+				if total_marks == 0 then
+					return ""
+				end
+
+				local current_mark = "—"
+
+				local mark_idx = harpoon:list()._index
+				if mark_idx ~= nil then
+					current_mark = tostring(mark_idx)
+				end
+
+				return string.format("󱡅 %s/%d", current_mark, total_marks)
+			end
+
+			require("lualine").setup({
 				options = {
 					theme = "auto",
 					globalstatus = true,
@@ -93,7 +112,7 @@ return {
 				},
 				sections = {
 					lualine_a = { "mode" },
-					lualine_b = { "branch" },
+					lualine_b = { "branch", harpoon_component },
 					lualine_c = {
 						{
 							"diagnostics",
@@ -114,14 +133,14 @@ return {
 							},
 						},
 						{ "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
-						{
-							function()
-								return require("nvim-navic").get_location()
-							end,
-							cond = function()
-								return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
-							end,
-						},
+						-- {
+						-- 	function()
+						-- 		return require("nvim-navic").get_location()
+						-- 	end,
+						-- 	cond = function()
+						-- 		return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
+						-- 	end,
+						-- },
 					},
 					lualine_x = {
 						{
@@ -151,7 +170,6 @@ return {
 							end,
 							color = fg("Debug"),
 						},
-						{ "tabnine" },
 						{
 							require("lazy.status").updates,
 							cond = require("lazy.status").has_updates,
@@ -177,20 +195,24 @@ return {
 					},
 				},
 				extensions = { "lazy" },
-			}
+			})
 		end,
 	},
 
 	{
 		"lukas-reineke/indent-blankline.nvim",
-		event = { "BufReadPost", "BufNewFile" },
+		event = { "BufEnter" },
 		main = "ibl",
 		opts = {
 			indent = { char = "│", tab_char = { "│" }, smart_indent_cap = false },
 			whitespace = {
 				remove_blankline_trail = false,
 			},
-			scope = { enabled = false },
+			scope = {
+				enabled = false,
+				show_start = false,
+				show_end = false,
+			},
 		},
 	},
 
@@ -290,34 +312,34 @@ return {
 	},
 
 	-- lsp symbol navigation for lualine
-	{
-		"SmiteshP/nvim-navic",
-		lazy = true,
-		init = function()
-			local on_attach = function(client, buffer)
-				if client.server_capabilities.documentSymbolProvider then
-					require("nvim-navic").attach(client, buffer)
-				end
-			end
-
-			vim.g.navic_silence = true
-			vim.api.nvim_create_autocmd("LspAttach", {
-				callback = function(args)
-					local buffer = args.buf
-					local client = vim.lsp.get_client_by_id(args.data.client_id)
-					on_attach(client, buffer)
-				end,
-			})
-		end,
-		opts = function()
-			return {
-				separator = " ",
-				highlight = true,
-				depth_limit = 5,
-				icons = icons.kinds,
-			}
-		end,
-	},
+	-- {
+	-- 	"SmiteshP/nvim-navic",
+	-- 	lazy = true,
+	-- 	init = function()
+	-- 		local on_attach = function(client, buffer)
+	-- 			if client.server_capabilities.documentSymbolProvider then
+	-- 				require("nvim-navic").attach(client, buffer)
+	-- 			end
+	-- 		end
+	--
+	-- 		vim.g.navic_silence = true
+	-- 		vim.api.nvim_create_autocmd("LspAttach", {
+	-- 			callback = function(args)
+	-- 				local buffer = args.buf
+	-- 				local client = vim.lsp.get_client_by_id(args.data.client_id)
+	-- 				on_attach(client, buffer)
+	-- 			end,
+	-- 		})
+	-- 	end,
+	-- 	opts = function()
+	-- 		return {
+	-- 			separator = " ",
+	-- 			highlight = true,
+	-- 			depth_limit = 5,
+	-- 			icons = icons.kinds,
+	-- 		}
+	-- 	end,
+	-- },
 
 	-- icons
 	{ "nvim-tree/nvim-web-devicons", lazy = true },

@@ -203,6 +203,15 @@ return {
 						end,
 					},
 				},
+				file_ignore_patterns = {
+					"node_modules",
+					"yarn.lock",
+					".git",
+					".sl",
+					"build",
+					"dist",
+				},
+				hidden = true,
 			},
 		},
 
@@ -215,7 +224,6 @@ return {
 						},
 					},
 					file_browser = {
-						theme = "ivy",
 						hijack_netrw = true, -- disables netrw and use telescope-file-browser in its place
 						mappings = {
 							["i"] = {},

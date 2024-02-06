@@ -163,8 +163,6 @@ local handlers = {
 	['ruff_lsp'] = function()
 		require("lspconfig").ruff_lsp.setup(override_opts {
 			on_attach = function(client, bufnr)
-				-- Disable hover in favor of Pyright
-				client.server_capabilities.hoverProvider = false
 				-- Enable completion triggered by <c-x><c-o>
 				vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 				-- Enable import sorting
@@ -183,14 +181,11 @@ local handlers = {
 					{ desc = "Organize Imports" })
 			end,
 			settings = {
+				hoverProvider = false,
 				args = { "--line-length=120" },
 			},
 		})
 	end,
-
-	['svelte'] = function()
-		require("lspconfig").svelte.setup(override_opts {})
-	end
 }
 
 return {
