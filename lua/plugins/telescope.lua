@@ -92,6 +92,7 @@ return {
 			{ "<leader>/",       telescope("live_grep"),                             desc = "Grep (root dir)" },
 			{ "<leader>:",       "<cmd>Telescope command_history<cr>",               desc = "Command History" },
 			{ "<leader><space>", telescope("files"),                                 desc = "Find Files (root dir)" },
+			{ "<leader><space>", telescope("files"),                                 desc = "Find Files (root dir)" },
 			-- find
 			{ "<leader>fb",      "<cmd>Telescope buffers<cr>",                       desc = "Buffers" },
 			{ "<leader>ff",      telescope("files", { cwd = false }),                desc = "Find Files (cwd)" },
@@ -158,7 +159,7 @@ return {
 				}),
 				desc = "Goto Symbol (Workspace)",
 			},
-			{ "<leader>e", ":Telescope file_browser<CR>", { noremap = true }, desc = "Open up file browser" },
+			{ "<leader>te", ":Telescope file_browser<CR>", { noremap = true }, desc = "Open up file browser" },
 			{ "<leader>u", "<cmd>Telescope undo<cr>" },
 		},
 

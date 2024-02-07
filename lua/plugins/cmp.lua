@@ -97,10 +97,12 @@ return {
 						luasnip.lsp_expand(args.body)
 					end,
 				},
+
 				window = {
 					completion = cmp.config.window.bordered(),
 					documentation = cmp.config.window.bordered(),
 				},
+
 				mapping = cmp.mapping.preset.insert({
 					["<C-b>"] = cmp.mapping.scroll_docs(-4),
 					["<C-f>"] = cmp.mapping.scroll_docs(4),
@@ -126,6 +128,7 @@ return {
 						end
 					end, { "i", "s" }),
 				}),
+
 				sources = cmp.config.sources({
 					{
 						name = "nvim_lsp",
@@ -143,16 +146,23 @@ return {
 					{ name = "buffer",  keyword_length = 3, max_item_count = 5 },
 					{ name = "path",    max_item_count = 3 },
 				}),
+
 				sorting = {
 					comparators = {
 						cmp.config.compare.offset,
 						cmp.config.compare.exact,
+
 						cmp.config.compare.score,
 						cmp.config.compare.recently_used,
-						require("cmp-under-comparator").under,
+						cmp.config.compare.locality,
 						cmp.config.compare.kind,
+						require("cmp-under-comparator").under,
+
+						cmp.config.compare.length,
+						cmp.config.compare.order,
 					},
 				},
+
 				enabled = function()
 					local context = require("cmp.config.context")
 					local disabled = false
@@ -162,6 +172,7 @@ return {
 					disabled = disabled or context.in_treesitter_capture("comment")
 					return not disabled
 				end,
+
 				formatting = {
 					expandable_indicator = true,
 					format = lspkind.cmp_format({
@@ -182,6 +193,7 @@ return {
 						end,
 					}),
 				},
+
 				experimental = {
 					ghost_text = true,
 				},

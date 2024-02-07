@@ -156,7 +156,15 @@ local handlers = {
 		require("lspconfig").pyright.setup(override_opts {
 			on_attach = function(client, bufnr)
 				vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(custom_on_publish_diagnostics, {})
-			end
+			end,
+			settings = {
+				python = {
+					analysis = {
+						autoSearchPaths = true,
+						diagnosticMode = "workspace",
+					},
+				},
+			},
 		})
 	end,
 
