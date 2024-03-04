@@ -160,7 +160,7 @@ return {
 				desc = "Goto Symbol (Workspace)",
 			},
 			{ "<leader>te", ":Telescope file_browser<CR>", { noremap = true }, desc = "Open up file browser" },
-			{ "<leader>u", "<cmd>Telescope undo<cr>" },
+			{ "<leader>u",  "<cmd>Telescope undo<cr>" },
 		},
 
 		opts = {

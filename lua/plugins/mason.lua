@@ -33,6 +33,10 @@ local function pyright_accessed_filter(diagnostic)
 		return false
 	end
 
+	if diagnostic.message == '"args" is not accessed' then
+		return false
+	end
+
 	-- Allow variables starting with an underscore
 	if string.match(diagnostic.message, '"_.+" is not accessed') then
 		return false
@@ -162,6 +166,7 @@ local handlers = {
 					analysis = {
 						autoSearchPaths = true,
 						diagnosticMode = "workspace",
+						exclude = { "**/build" },
 					},
 				},
 			},
