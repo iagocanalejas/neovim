@@ -166,7 +166,7 @@ local handlers = {
 					analysis = {
 						autoSearchPaths = true,
 						diagnosticMode = "workspace",
-						exclude = { "**/build" },
+						exclude = { "**/build", "**/venv" },
 					},
 				},
 			},

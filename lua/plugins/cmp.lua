@@ -99,6 +99,8 @@ return {
 					end,
 				},
 
+				preselect = cmp.PreselectMode.None,
+
 				window = {
 					completion = cmp.config.window.bordered(),
 					documentation = cmp.config.window.bordered(),
