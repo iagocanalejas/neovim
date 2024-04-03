@@ -166,7 +166,7 @@ local handlers = {
 					analysis = {
 						autoSearchPaths = true,
 						diagnosticMode = "workspace",
-						exclude = { "**/build", "**/venv" },
+						exclude = { "**/build", "**/venv", "venv", "build" },
 					},
 				},
 			},
@@ -210,7 +210,7 @@ return {
 			require("mason").setup()
 			local mr = require("mason-registry")
 
-			local packages = { "black", "prettierd", "pyright", "shfmt", "stylua" }
+			local packages = { "prettierd", "pyright", "shfmt", "stylua" }
 			local function ensure_installed()
 				for _, tool in ipairs(packages) do
 					local p = mr.get_package(tool)

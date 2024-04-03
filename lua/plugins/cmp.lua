@@ -81,10 +81,7 @@ return {
 			local luasnip = require("luasnip")
 			local lspkind = require("lspkind")
 
-			require("nvim-autopairs").setup({
-				check_ts = true,
-				enable_check_bracket_line = false,
-			})
+			require("nvim-autopairs").setup({ check_ts = true })
 
 			-- Integrate nvim-autopairs with cmp
 			cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())

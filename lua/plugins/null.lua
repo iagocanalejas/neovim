@@ -12,9 +12,6 @@ return {
 					nls.builtins.formatting.prettierd.with({
 						extra_args = { "--max_line_length=120", "--print-width=120", "--tab-width=4" },
 					}),
-					nls.builtins.formatting.black.with({
-						extra_args = { "--line-length=120" },
-					}),
 				},
 
 				on_attach = function(client, bufnr)
