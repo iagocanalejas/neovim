@@ -14,7 +14,7 @@ return {
 			{ "z4", function() require("ufo").closeFoldsWith(4) end, desc = " 󱃄 Close L4 Folds" },
 			-- stylua: ignore end
 		},
-		init = function()
+		config = function()
 			-- INFO fold commands usually change the foldlevel, which fixes folds, e.g.
 			-- auto-closing them after leaving insert mode, however ufo does not seem to
 			-- have equivalents for zr and zm because there is no saved fold level.
@@ -22,21 +22,16 @@ return {
 			-- them to 99
 			vim.opt.foldlevel = 99
 			vim.opt.foldlevelstart = 99
+
+			require("ufo").setup({
+				provider_selector = function(_, _, _)
+					return { "treesitter", "indent" }
+				end,
+				-- when opening the buffer, close these fold kinds
+				-- use `:UfoInspect` to get available fold kinds from the LSP
+				close_fold_kinds_for_ft = { "imports", "comment" },
+				open_fold_hl_timeout = 800,
+			})
 		end,
-		opts = {
-			provider_selector = function(_, ft, _)
-				-- INFO some filetypes only allow indent, some only LSP, some only
-				-- treesitter. However, ufo only accepts two kinds as priority,
-				-- therefore making this function necessary :/
-				local lspWithOutFolding = { "markdown", "sh", "css", "html", "python", "yaml", "lua", "json" }
-				if vim.tbl_contains(lspWithOutFolding, ft) then return { "treesitter", "indent" } end
-				return { "lsp", "indent" }
-			end,
-			-- when opening the buffer, close these fold kinds
-			-- use `:UfoInspect` to get available fold kinds from the LSP
-			close_fold_kinds_for_ft = { "imports", "comment" },
-			open_fold_hl_timeout = 800,
-			fold_virt_text_handler = foldTextFormatter,
-		},
 	},
 }

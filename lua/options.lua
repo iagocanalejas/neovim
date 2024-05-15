@@ -1,5 +1,8 @@
 local opt = vim.opt
 
+-- You have to turn this one on :)
+opt.inccommand = "split"
+
 -- Enable relative line numbers
 opt.nu = true
 opt.rnu = true
@@ -58,7 +61,7 @@ opt.number = true          -- Print line number
 opt.pumblend = 10          -- Popup blend
 opt.pumheight = 15         -- Maximum number of entries in a popup
 opt.relativenumber = true  -- Relative line numbers
-opt.scrolloff = 8          -- Lines of context
+opt.scrolloff = 25         -- Lines of context
 opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize" }
 opt.shiftround = true      -- Round indent
 opt.shortmess:append({ W = true, I = true, c = true })
