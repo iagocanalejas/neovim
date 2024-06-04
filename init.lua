@@ -20,11 +20,11 @@ require("lazy").setup(
     {
         { "nvim-lua/plenary.nvim" },
         {
-            "folke/tokyonight.nvim",
+            "catppuccin/nvim",
             lazy = false,
             priority = 1000,
             config = function()
-                vim.cmd.colorscheme("tokyonight-moon")
+                vim.cmd.colorscheme("catppuccin-mocha")
             end,
         },
         { import = "plugins" },
@@ -36,7 +36,7 @@ require("lazy").setup(
             keymaps = true,
         },
         install = {
-            colorscheme = { "tokyonight-moon" },
+            colorscheme = { "catppuccin-mocha" },
         },
     }
 )
