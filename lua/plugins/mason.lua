@@ -71,7 +71,7 @@ local handlers = {
 
   ['htmx'] = function()
     require("lspconfig").htmx.setup(override_opts {
-      filetypes = { "html", "templ" }
+      filetypes = { "html", "templ", "htmldjango" }
     })
   end,
 
@@ -113,6 +113,26 @@ local handlers = {
 
   ['ts_ls'] = function()
     require("lspconfig").ts_ls.setup(override_opts {
+      filetypes = {
+        "javascript",
+        "typescript",
+        "vue",
+      },
+      init_options = {
+        plugins = {
+          {
+            name = "@vue/typescript-plugin",
+            location = "/home/canalejas/local/share/pnpm/global/5/node_modules/@vue/typescript-plugin",
+            languages = { "javascript", "typescript", "vue" },
+          },
+        },
+      },
+      on_new_config = function(new_config, new_root_dir)
+        local lib_path = vim.fs.find('node_modules/@vue/typescript-plugin', { path = new_root_dir, upward = true })[1]
+        if lib_path then
+          new_config.init_options.plugin[0] = { name = "@vue/typescript-plugin", location = lib_path, languages = { "javascript", "typescript", "vue" } }
+        end
+      end,
       settings = {
         typescript = {
           format = {
@@ -140,16 +160,18 @@ local handlers = {
       init_options = {
         userLanguages = {
           templ = "html",
+          htmldjango = "html",
         },
       },
       settings = {
         includeLanguages = {
           templ = "html",
+          htmldjango = "html",
         },
         validate = true,
       },
       filetypes = {
-        "django-html", "htmldjango", "gohtml", "gohtmltmpl", "html",
+        "django-html", "htmldjango", "gohtml", "gohtmltmpl", "html", "htmldjango",
         "css", "less", "postcss", "sass", "scss",
         "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "templ",
       },
@@ -162,19 +184,23 @@ local handlers = {
         vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(custom_on_publish_diagnostics, {})
       end,
       settings = {
+        pyright = {
+          -- Using Ruff's import organizer
+          disableOrganizeImports = true,
+        },
         python = {
           analysis = {
             autoSearchPaths = true,
             diagnosticMode = "workspace",
-            exclude = { "**/build", "**/venv", "venv", "build" },
+            exclude = { "**/build", "**/venv", "**/dist", "**/out", "venv", "build", "dist", "out" },
           },
         },
       },
     })
   end,
 
-  ['ruff_lsp'] = function()
-    require("lspconfig").ruff_lsp.setup(override_opts {
+  ['ruff'] = function()
+    require("lspconfig").ruff.setup(override_opts {
       on_attach = function(client, bufnr)
         -- Enable completion triggered by <c-x><c-o>
         vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
@@ -196,9 +222,38 @@ local handlers = {
       settings = {
         hoverProvider = false,
         args = { "--line-length=120" },
+        exclude = { "**/build", "**/venv", "**/dist", "**/out", "venv", "build", "dist", "out" },
       },
     })
   end,
+
+  ['elixirls'] = function()
+    require("lspconfig").elixirls.setup(override_opts {
+      settings = {
+        elixirLS = {
+          dialyzerEnabled = false,
+          fetchDeps = false
+        }
+      },
+    })
+  end,
+
+  ['volar'] = function()
+    require("lspconfig").volar.setup(override_opts {
+      filetypes = { "vue" },
+      init_options = {
+        typescript = {
+          tsdk = "/home/canalejas/local/share/pnpm/global/5/node_modules/typescript/lib"
+        }
+      },
+      on_new_config = function(new_config, new_root_dir)
+        local lib_path = vim.fs.find('node_modules/typescript/lib', { path = new_root_dir, upward = true })[1]
+        if lib_path then
+          new_config.init_options.typescript.tsdk = lib_path
+        end
+      end
+    })
+  end
 }
 
 return {
@@ -234,7 +289,8 @@ return {
           "ts_ls",
           "tailwindcss",
           "pyright",
-          "ruff_lsp",
+          "ruff",
+          "elixirls",
           "yamlls"
         },
         automatic_installation = true,

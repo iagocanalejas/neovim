@@ -66,10 +66,12 @@ vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Go to upper window", remap = tr
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Go to right window", remap = true })
 
 -- Custom mappings
-vim.keymap.set("n", "<leader>e", vim.cmd.Ex)                                            -- opens Explorer
+vim.keymap.set("n", "<leader>e", "<CMD>Oil<CR>", { desc = "Open parent directory" })    -- opens Explorer
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 vim.keymap.set("n", "J", "mzJ`z")                                                       -- removes line break
 vim.keymap.set("x", "<leader>p", [["_dP]], { desc = "Paste without clipboard update" }) -- greatest remap ever
 vim.keymap.set("i", "<C-c>", "<Esc>")
+vim.keymap.set("n", "<leader>fg", require("config.multigrep").live_multigrep)
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "+replace" })
 

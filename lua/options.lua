@@ -91,12 +91,13 @@ opt.foldenable = true
 
 local global = vim.g
 
-global.markdown_recommended_style = 0                                                    -- Fix markdown indentation settings
-global.netrw_banner = false                                                              -- Disable banner
-global.netrw_altv = 1                                                                    -- Open with right splitting
+global.markdown_recommended_style = 0 -- Fix markdown indentation settings
+global.netrw_banner = false           -- Disable banner
+global.netrw_altv = 1                 -- Open with right splitting
 global.netrw_liststyle = 4
-global.netrw_list_hide = (vim.fn["netrw_gitignore#Hide"]()) .. [[,\(^\|\s\s\)\zs\.\S\+]] -- use .gitignore
+-- global.netrw_list_hide = (vim.fn["netrw_gitignore#Hide"]()) .. [[,\(^\|\s\s\)\zs\.\S\+]] -- use .gitignore
 
 
 -- additional filetypes
 vim.filetype.add({ extension = { templ = "templ" } })
+vim.filetype.add({ extension = { jinja2 = "htmldjango" }, pattern = { ["*.html.jinja2"] = "htmldjango" } })
