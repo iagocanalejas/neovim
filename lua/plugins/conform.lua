@@ -36,7 +36,7 @@ return {
         javascript = { 'prettierd' },
         typescript = { 'prettierd' },
         vue = { 'prettierd' },
-        markdown = { 'markdownlint' },
+        markdown = { 'prettierd' },
       },
     },
   },

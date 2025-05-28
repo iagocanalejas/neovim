@@ -178,6 +178,7 @@ return {
             },
           },
         },
+
         jsonls = {
           on_new_config = function(new_config)
             new_config.settings.json.schemas = new_config.settings.json.schemas or {}
@@ -192,24 +193,18 @@ return {
             },
           },
         },
+
         ts_ls = {
-          filetypes = { 'javascript', 'typescript', 'vue' },
+          filetypes = { 'typescript', 'javascript', 'vue' },
           init_options = {
             plugins = {
               {
                 name = '@vue/typescript-plugin',
-                location = '/home/canalejas/.local/share/pnpm/global/5/node_modules/@vue/typescript-plugin',
+                location = vim.fn.expand '$MASON/packages' .. '/vue-language-server' .. '/node_modules/@vue/language-server',
                 languages = { 'vue' },
               },
             },
           },
-          on_new_config = function(new_config, new_root_dir)
-            local lib_path = vim.fs.find('node_modules/@vue/typescript-plugin', { path = new_root_dir, upward = true })[1]
-            print(lib_path)
-            if lib_path then
-              new_config.init_options.plugin[0] = { name = '@vue/typescript-plugin', location = lib_path, languages = { 'javascript', 'typescript', 'vue' } }
-            end
-          end,
           settings = {
             typescript = {
               format = {
@@ -230,22 +225,103 @@ return {
             },
           },
         },
+
         vue_ls = {
           filetypes = { 'vue' },
           init_options = {
-            vue = {
-              hybridMode = false,
-            },
             typescript = {
-              tsdk = '/home/canalejas/.local/share/pnpm/global/5/node_modules/typescript/lib',
+              tsdk = vim.fn.stdpath 'data' .. '/mason/packages/typescript-language-server/node_modules/typescript/lib',
             },
           },
-          on_new_config = function(new_config, new_root_dir)
-            local lib_path = vim.fs.find('node_modules/typescript/lib', { path = new_root_dir, upward = true })[1]
-            if lib_path then
-              new_config.init_options.typescript.tsdk = lib_path
-            end
+        },
+
+        tailwindcss = {
+          init_options = {
+            userLanguages = {
+              templ = 'html',
+              htmldjango = 'html',
+            },
+          },
+          settings = {
+            includeLanguages = {
+              templ = 'html',
+              htmldjango = 'html',
+            },
+            validate = true,
+          },
+          filetypes = {
+            'django-html',
+            'htmldjango',
+            'gohtml',
+            'gohtmltmpl',
+            'html',
+            'htmldjango',
+            'css',
+            'less',
+            'postcss',
+            'sass',
+            'scss',
+            'javascript',
+            'javascriptreact',
+            'typescript',
+            'typescriptreact',
+            'vue',
+            'svelte',
+            'templ',
+          },
+        },
+
+        pyright = {
+          on_attach = function(client, bufnr)
+            vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(custom_on_publish_diagnostics, {})
           end,
+          settings = {
+            pyright = {
+              -- Using Ruff's import organizer
+              disableOrganizeImports = true,
+            },
+            python = {
+              analysis = {
+                autoSearchPaths = true,
+                diagnosticMode = 'workspace',
+                exclude = { '**/build', '**/venv', '**/dist', '**/out', 'venv', 'build', 'dist', 'out' },
+              },
+            },
+          },
+        },
+
+        ruff = {
+          on_attach = function(client, bufnr)
+            -- Enable completion triggered by <c-x><c-o>
+            vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+            -- Enable import sorting
+            vim.keymap.set('n', '<leader>o', function()
+              vim.lsp.buf.code_action {
+                apply = true,
+                context = {
+                  only = { 'source.organizeImports' },
+                  diagnostics = {},
+                },
+              }
+            end, { desc = 'Organize Imports' })
+          end,
+          settings = {
+            hoverProvider = false,
+            args = { '--line-length=120' },
+            exclude = { '**/build', '**/venv', '**/dist', '**/out', 'venv', 'build', 'dist', 'out' },
+          },
+        },
+
+        gopls = {
+          settings = {
+            gopls = {
+              gofumpt = true,
+              usePlaceholders = true,
+              analyses = {
+                unusedparams = true,
+              },
+            },
+          },
         },
       }
 
@@ -267,7 +343,6 @@ return {
         'gopls',
         'jsonls',
         'lua_ls',
-        'marksman',
         'stylua',
         'shfmt',
         'prettierd',
@@ -275,6 +350,7 @@ return {
         'ruff',
         'ts_ls',
         'tailwindcss',
+        'vale',
         'vue_ls',
         'yamlls',
       })
