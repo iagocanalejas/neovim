@@ -194,14 +194,32 @@ return {
           },
         },
 
-        ts_ls = {
+        vue_ls = {
           filetypes = { 'typescript', 'javascript', 'vue' },
+          init_options = {
+            vue = {
+              hybridMode = true,
+            },
+            typescript = {
+              tsdk = vim.fn.expand '$HOME/.local/share/nvim/mason/packages/typescript-language-server/node_modules/typescript/lib',
+            },
+          },
+          on_new_config = function(new_config, new_root_dir)
+            local lib_path = vim.fs.find('node_modules/typescript/lib', { path = new_root_dir, upward = true })[1]
+            if lib_path then
+              new_config.init_options.typescript.tsdk = lib_path
+            end
+          end,
+        },
+
+        ts_ls = {
+          filetypes = { 'javascript', 'typescript', 'vue' },
           init_options = {
             plugins = {
               {
                 name = '@vue/typescript-plugin',
-                location = vim.fn.expand '$MASON/packages' .. '/vue-language-server' .. '/node_modules/@vue/language-server',
-                languages = { 'vue' },
+                location = vim.fn.expand '$HOME/.local/share/pnpm/global/5/node_modules/@vue/typescript-plugin',
+                languages = { 'javascript', 'typescript', 'vue' },
               },
             },
           },
@@ -222,15 +240,6 @@ return {
             },
             completions = {
               completeFunctionCalls = true,
-            },
-          },
-        },
-
-        vue_ls = {
-          filetypes = { 'vue' },
-          init_options = {
-            typescript = {
-              tsdk = vim.fn.stdpath 'data' .. '/mason/packages/typescript-language-server/node_modules/typescript/lib',
             },
           },
         },
@@ -367,10 +376,21 @@ return {
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+            vim.lsp.config(server_name, server)
           end,
         },
       }
+
+      -- HACK: this is a workaround for buggy LSP servers that don't automatically work
+      local buggy_servers = { 'ts_ls', 'vue_ls' }
+      for _, server_name in pairs(buggy_servers) do
+        local server = servers[server_name] or {}
+        -- This handles overriding only values explicitly passed
+        -- by the server configuration above. Useful when disabling
+        -- certain features of an LSP (for example, turning off formatting for ts_ls)
+        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+        vim.lsp.config(server_name, server)
+      end
     end,
   },
 }
