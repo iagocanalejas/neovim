@@ -194,24 +194,6 @@ return {
           },
         },
 
-        vue_ls = {
-          filetypes = { 'typescript', 'javascript', 'vue' },
-          init_options = {
-            vue = {
-              hybridMode = true,
-            },
-            typescript = {
-              tsdk = vim.fn.expand '$HOME/.local/share/nvim/mason/packages/typescript-language-server/node_modules/typescript/lib',
-            },
-          },
-          -- on_new_config = function(new_config, new_root_dir)
-          --   local lib_path = vim.fs.find('node_modules/typescript/lib', { path = new_root_dir, upward = true })[1]
-          --   if lib_path then
-          --     new_config.init_options.typescript.tsdk = lib_path
-          --   end
-          -- end,
-        },
-
         ts_ls = {
           filetypes = { 'javascript', 'typescript', 'vue' },
           init_options = {
@@ -360,7 +342,6 @@ return {
         'ts_ls',
         'tailwindcss',
         'vale',
-        'vue_ls',
         'yamlls',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -371,9 +352,6 @@ return {
         automatic_enable = true,
         handlers = {
           function(server_name)
-            if server_name == 'vue_ls' then
-              return
-            end
             local server = servers[server_name] or {}
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
@@ -385,7 +363,7 @@ return {
       }
 
       -- HACK: this is a workaround for buggy LSP servers that don't automatically
-      local buggy_servers = { 'ts_ls', 'vue_ls' }
+      local buggy_servers = { 'ts_ls' }
       for _, server_name in pairs(buggy_servers) do
         local server = servers[server_name] or {}
         -- This handles overriding only values explicitly passed
